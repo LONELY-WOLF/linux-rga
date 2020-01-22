@@ -25,9 +25,10 @@ EXCUTE_BIN		:=
 DYNAMIC_LIBS 	:= librga.so
 
 # Environment settings. The value of PROJECT_DIR shoule be set in the *nix system as the the absolute dir path of your project.
-PROJECT_DIR	?= /opt/librga_linux
+#PROJECT_DIR	?= /opt/librga_linux
 #CURDIR    		:= $(PROJECT_DIR)/src/pbl
 CURDIR     		:= $(shell pwd)
+PROJECT_DIR		:= $(CURDIR)
 PRG_BIN_DIR		:= $(PROJECT_DIR)/bin
 PRG_LIB_DIR		:= $(PROJECT_DIR)/lib
 PRG_INC_DIR		:= $(PROJECT_DIR)/include
@@ -87,7 +88,7 @@ $(foreach dirname,$(sort $(PRG_INC_DIR) $(PRG_BIN_DIR) $(PRG_LIB_DIR)),\
 
 # Complie and link variables. LD_LIBS means the dynamic or static library needed for the object file.
 CFLAGS     	:= $(if $(DEBUG),-g -Wall, -O2 -Wall)
-CFLAGS     	+= $(if $(GEN_DYN_LIB), $(addprefix -fPIC -I ,$(sort $(dir $(SRC_H)))), $(addprefix -I ,$(sort $(dir $(SRC_H)))))
+CFLAGS     	+= -fPIC -I ,$(sort $(dir $(SRC_H)))
 CXXFLAGS   	= $(CFLAGS)
 LDFLAGS    	:=
 LD_LIB_DIR 	:= #-L $(PRG_LIB_DIR)
@@ -159,6 +160,12 @@ $(foreach lib,$(STATIC_LIBS),$(eval $(call gen_libs,$(lib),$(CUR_OBJ),$(AR))))
 
 
 all: $(ULT_BIN) $(ULT_LIBS)
+
+
+install:
+	install -m 755 -C $(PRG_LIB_DIR)/librga.so /usr/lib
+	install -m 755 -d /usr/include/rga
+	install -m 644 -C drmrga.h RgaApi.h rga.h RockchipRga.h RockchipRgaMacro.h /usr/include/rga
 
 
 clean:
