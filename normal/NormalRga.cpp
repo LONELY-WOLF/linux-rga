@@ -141,6 +141,62 @@ int RgaDeInit(void *ctx)
 
 int RgaBlit(rga_info *src, rga_info *dst, rga_info *src1)
 {
+	struct rga_req r;
+	int ret = RgaFillReq(&r, src, dst, src1);
+	if(ret)
+	{
+		return ret;
+	}
+	return RgaBlit(&r);
+}
+
+int RgaBlit(rga_req* rgareq)
+{
+	struct rgaContext *ctx = rgaCtx;
+
+	if (!ctx) {
+		DEBUG("Try to use uninit rgaCtx=%p \n",ctx);
+		return -ENODEV;
+	}
+
+	if(ioctl(ctx->rgaFd, RGA_BLIT_SYNC, rgareq)) {
+		DEBUG(" %s(%d) RGA_BLIT_SYNC fail: %s \n",__FUNCTION__, __LINE__,strerror(errno));
+	}
+	return 0;
+}
+
+int RgaBlitAsync(rga_req* rgareq)
+{
+	struct rgaContext *ctx = rgaCtx;
+
+	if (!ctx) {
+		DEBUG("Try to use uninit rgaCtx=%p \n",ctx);
+		return -ENODEV;
+	}
+
+	if(ioctl(ctx->rgaFd, RGA_BLIT_ASYNC, rgareq)) {
+		DEBUG(" %s(%d) RGA_BLIT_ASYNC fail: %s \n",__FUNCTION__, __LINE__,strerror(errno));
+	}
+	return 0;
+}
+
+int RgaFlush()
+{
+	struct rgaContext *ctx = rgaCtx;
+
+	if (!ctx) {
+		DEBUG("Try to use uninit rgaCtx=%p \n",ctx);
+		return -ENODEV;
+	}
+
+	if(ioctl(ctx->rgaFd, RGA_FLUSH, NULL)) {
+		DEBUG(" %s(%d) RGA_FLUSH fail: %s \n",__FUNCTION__, __LINE__,strerror(errno));
+	}
+	return 0;
+}
+
+int RgaFillReq(rga_req* rgareq, rga_info *src, rga_info *dst, rga_info *src1)
+{
 	//check rects
 	//check buffer_handle_t with rects
 	struct rgaContext *ctx = rgaCtx;
@@ -686,9 +742,8 @@ int RgaBlit(rga_info *src, rga_info *dst, rga_info *src1)
     DEBUG("<<<<-------- rgaReg -------->>>>\n");
 	NormalRgaLogOutRgaReq(rgaReg);
 
-	if(ioctl(ctx->rgaFd, RGA_BLIT_SYNC, &rgaReg)) {
-		DEBUG(" %s(%d) RGA_BLIT fail: %s \n",__FUNCTION__, __LINE__,strerror(errno));
-	}
+	//printf("Req: %p\n", rgareq);
+	memcpy(rgareq, &rgaReg, sizeof(rga_req));
 	return 0;
 }
 

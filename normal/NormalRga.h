@@ -55,6 +55,10 @@
 int         RgaInit(void **ctx);
 int         RgaDeInit(void *ctx);
 int         RgaBlit(rga_info_t *src, rga_info_t *dst, rga_info_t *src1);
+int         RgaBlit(rga_req *rgareq);
+int         RgaBlitAsync(rga_req *rgareq);
+int         RgaFlush();
+int         RgaFillReq(rga_req *rgareq, rga_info *src, rga_info *dst, rga_info *src1);
 int         RgaCollorFill(rga_info_t *dst);
 
 int         NormalRgaInitTables();

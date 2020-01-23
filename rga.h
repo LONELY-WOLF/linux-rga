@@ -260,7 +260,7 @@ line_draw_t;
 
 
 
- struct rga_req { 
+typedef struct rga_req { 
     unsigned char render_mode;            /* (enum) process mode sel */
     
     rga_img_info_t src;                   /* src image info */
@@ -340,7 +340,7 @@ line_draw_t;
 
     /* completion is reported through a callback */
 	void (*complete)(int retval);
-};
+}rga_req;
 
 #if 0    
 typedef struct TILE_INFO

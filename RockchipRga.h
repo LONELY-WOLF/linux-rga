@@ -55,6 +55,10 @@ public:
     int         RkRgaFree(bo_t *bo_info);
     int         RkRgaGetBufferFd(bo_t *bo_info, int *fd);
     int         RkRgaBlit(rga_info *src, rga_info *dst, rga_info *src1);
+    int         RkRgaBlit(rga_req *rgareq);
+    int         RkRgaBlitAsync(rga_req *rgareq);
+    int         RkRgaFlush();
+    int         RkRgaFillReq(rga_req* rgareq, rga_info *src, rga_info *dst, rga_info *src1);
     int         RkRgaCollorFill(rga_info *dst);
 
 

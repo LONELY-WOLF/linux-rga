@@ -201,10 +201,53 @@ int RockchipRga::RkRgaGetBufferFd(bo_t *bo_info, int *fd)
 #endif
 }
 
-int RockchipRga::RkRgaBlit(rga_info *src, rga_info *dst, rga_info *src1)
+int RockchipRga::RkRgaBlit(struct rga_info *src, rga_info *dst, rga_info *src1)
 {
     int ret = 0;
     ret = RgaBlit(src, dst, src1);
+    if (ret) {
+        RkRgaLogOutUserPara(src);
+        RkRgaLogOutUserPara(dst);
+        RkRgaLogOutUserPara(src1);
+        printf("This output the user patamaters when rga call blit fail \n");
+    }
+    return ret;
+}
+
+int RockchipRga::RkRgaBlit(rga_req* rgareq)
+{
+    int ret = 0;
+    ret = RgaBlit(rgareq);
+    if (ret) {
+        printf("RGA call blit fail \n");
+    }
+    return ret;
+}
+
+int RockchipRga::RkRgaBlitAsync(rga_req* rgareq)
+{
+    int ret = 0;
+    ret = RgaBlitAsync(rgareq);
+    if (ret) {
+        printf("RGA call blit async fail \n");
+    }
+    return ret;
+}
+
+int RockchipRga::RkRgaFlush()
+{
+    int ret = 0;
+    ret = RgaFlush();
+    if (ret) {
+        printf("RGA call flush fail \n");
+    }
+    return ret;
+}
+
+int RockchipRga::RkRgaFillReq(rga_req* rgareq, rga_info *src, rga_info *dst, rga_info *src1)
+{
+    int ret = 0;
+    ret = RgaFillReq(rgareq, src, dst, src1);
     if (ret) {
         RkRgaLogOutUserPara(src);
         RkRgaLogOutUserPara(dst);
