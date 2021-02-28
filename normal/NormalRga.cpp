@@ -455,7 +455,7 @@ int RgaFillReq(rga_req* rgareq, rga_info *src, rga_info *dst, rga_info *src1)
 	}
     DEBUG("scaleMode = %d , stretch = %d; \n",scaleMode,stretch);
 
-	switch (rotation) {
+	switch (rotation & 0x0F) {
 		case HAL_TRANSFORM_FLIP_H:
 			orientation = 0;
 			rotateMode = 2;
@@ -482,6 +482,23 @@ int RgaFillReq(rga_req* rgareq, rga_info *src, rga_info *dst, rga_info *src1)
 			srcYPos = relSrcRect.yoffset;
 			srcActW = relSrcRect.width;
 			srcActH = relSrcRect.height;
+
+            dstVirW = relDstRect.wstride;
+            dstVirH = relDstRect.hstride;
+            dstXPos = relDstRect.xoffset;
+            dstYPos = relDstRect.yoffset;
+            dstActW = relDstRect.width;
+            dstActH = relDstRect.height;
+            break;
+        case HAL_TRANSFORM_FLIP_H_V:
+            orientation = 0;
+            rotateMode = 4;
+            srcVirW = relSrcRect.wstride;
+            srcVirH = relSrcRect.hstride;
+            srcXPos = relSrcRect.xoffset;
+            srcYPos = relSrcRect.yoffset;
+            srcActW = relSrcRect.width;
+            srcActH = relSrcRect.height;
 
 			dstVirW = relDstRect.wstride;
 			dstVirH = relDstRect.hstride;
@@ -559,6 +576,18 @@ int RgaFillReq(rga_req* rgareq, rga_info *src, rga_info *dst, rga_info *src1)
 			dstActH = relDstRect.height;
 			break;
 	}
+
+    switch ((rotation & 0xF0) >> 4) {
+        case HAL_TRANSFORM_FLIP_H :
+            rotateMode |= (2 << 4);
+            break;
+        case HAL_TRANSFORM_FLIP_V :
+            rotateMode |= (3 << 4);
+            break;
+        case HAL_TRANSFORM_FLIP_H_V:
+            rotateMode |= (4 << 4);
+            break;
+    }
 
 	clip.xmin = 0;
 	clip.xmax = dstVirW - 1;
